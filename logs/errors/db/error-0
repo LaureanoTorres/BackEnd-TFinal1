@@ -1,0 +1,1 @@
+{"code":"ER_BAD_DB_ERROR","errno":1049,"sqlMessage":"Unknown database 'pruebande'","sqlState":"42000","fatal":true}
