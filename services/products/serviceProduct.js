@@ -1,4 +1,4 @@
-const dbQueryAsync = require('../../config/dbConfig')
+const {pool}= require('../../config/dbConfig')
 const mailerService = require('./mailerService/mailerService')
 const { productCreatedTemplate } = require('./mailerService/templates/productMailTemplate')
 
@@ -6,7 +6,7 @@ const { productCreatedTemplate } = require('./mailerService/templates/productMai
 const createProduct = async ({nombre, price, stock, descripcion}) =>{
     try{
         const query = 'INSERT INTO productos (nombre, precio, stock, descripcion) VALUES (?,?,?,?)'
-        const result = await dbQueryAsync(query, [nombre, price, stock, descripcion])
+        const result = await pool.promise().query(query, [nombre, price, stock, descripcion])
         mailerService.transport.sendMail(
             productCreatedTemplate('', 'admin', {nombre, price, stock, descripcion}), (error) =>{
             if (error){
@@ -26,7 +26,7 @@ const createProduct = async ({nombre, price, stock, descripcion}) =>{
 const getAllProducts = async (limit) => {
     try{
         const query = 'SELECT * FROM productos'
-        const result = await dbQueryAsync(query)
+        const result = (await pool.promise().query(query))[0]
 
         if(limit){
             return result.splice(limit)
@@ -46,7 +46,7 @@ getAllProducts() //si pones el numero adentro tendras un limite
 const getProductById = async (pid) => {
     try{
         const query = `SELECT * FROM productos WHERE Id = (?)`
-        const result = await dbQueryAsync(query,[pid])
+        const result = (await pool.promise().query(query,[pid]))[0]
         return result[0]
     }
     catch(error){
@@ -61,7 +61,7 @@ const getProductById = async (pid) => {
 const deleteProductById = async (pid) => {
     try{
         const query = `DELETE FROM productos WHERE Id = (?)`
-        const result = await dbQueryAsync(query,[pid])
+        const result = await pool.promise().query(query,[pid])
         if(result.affectedRows == 0){
             return 404
         }
