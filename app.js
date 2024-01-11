@@ -105,7 +105,7 @@ app.post('/auth/verify', authMiddleware, ()=>{
     }
 }) */
 
-app.get*+('/', (req, res) =>{
+app.get('/', (req, res) =>{
     res.send('Text')
 })
 
