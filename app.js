@@ -105,6 +105,9 @@ app.post('/auth/verify', authMiddleware, ()=>{
     }
 }) */
 
+app.get*+('/', (req, res) =>{
+    res.send('Text')
+})
 
 app.listen(PORT, () =>{
     console.log('El servidor se esta escuchando en http://localhost:' + PORT + '/')
