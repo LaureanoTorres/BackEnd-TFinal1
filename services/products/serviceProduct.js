@@ -27,7 +27,6 @@ const getAllProducts = async (limit) => {
     try{
         const query = 'SELECT * FROM productos'
         const result = (await pool.promise().query(query))[0]
-
         if(limit){
             return result.splice(limit)
         }

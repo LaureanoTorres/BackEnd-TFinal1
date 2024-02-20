@@ -27,19 +27,37 @@ app.use(express.static(__dirname + '/public'))
 
 const secretKey = process.env.SECRET_KEY_JWT
 
+
+const {pool}= require('./config/dbConfig')
+
 app.use('/api/products/', productRouter)
 
 const users = []
 
+const getUserByName = async (pid) => {
+    try{
+        const query = `SELECT * FROM usuarios WHERE nombre = (?)`
+        const result = (await pool.promise().query(query,[pid]))[0]
+        return result[0]
+    }
+    catch(error){
+        console.error(error)
+        return false
+    }        
+}
+
+
+
 app.post('/register', (req,res)=>{
     const {username, password} = req.body
-    if(users.find((user) => user.username === username)){
+    if(getUserByName(username)){
         return res.status(400).json({message: 'Username is not available', status: 400})
     }
     const newUser = {username, password}
     users.push(newUser)
     res.status(201).json({message: 'User was created successfully!', status: 201})
 })
+
 
 app.post('/login', (req,res)=>{
     const {username, password} = req.body
@@ -55,6 +73,7 @@ app.post('/login', (req,res)=>{
 app.post('/auth/verify', authMiddleware, ()=>{
     res.status(200).json({status: 200, message: 'Valid token'})
 })
+
 
 
 
